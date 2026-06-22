@@ -1,0 +1,42 @@
+version: '3'
+
+# Environment variables:
+#   DB_URL      — PostgreSQL DSN, e.g. postgres://user:pass@localhost:5432/db?sslmode=disable
+#   HOST        — listen address (default: 0.0.0.0)
+#   PORT        — listen port    (default: 8080)
+#   LOG_LEVEL   — log verbosity  (default: info)
+
+tasks:
+  up:
+    desc: Start all services via docker-compose
+    cmd: docker compose up --build -d
+
+  down:
+    desc: Stop and remove containers
+    cmd: docker compose down
+
+  logs:
+    desc: Follow server logs
+    cmd: docker compose logs -f server
+
+  run:
+    desc: Run server locally (requires DB_URL env var)
+    cmd: go run ./cmd/server
+
+  migrate:
+    desc: Apply migrations locally (requires DB_URL env var)
+    cmd: go run ./cmd/migrator
+
+  build:
+    desc: Build all binaries
+    cmds:
+      - go build -o bin/server ./cmd/server
+      - go build -o bin/migrator ./cmd/migrator
+
+  tidy:
+    desc: Tidy go modules
+    cmd: go mod tidy
+
+  lint:
+    desc: Run golangci-lint
+    cmd: golangci-lint run ./...

@@ -1,0 +1,97 @@
+[
+  {
+    "id": "prj-payment-gateway",
+    "namespaceId": "ns-payments",
+    "name": "payment-gateway",
+    "displayName": "Payment Gateway",
+    "description": "Единая точка входа для обработки всех платёжных транзакций."
+  },
+  {
+    "id": "prj-fraud-detection",
+    "namespaceId": "ns-payments",
+    "parentProjectId": "prj-payment-gateway",
+    "name": "fraud-detection",
+    "displayName": "Fraud Detection",
+    "description": "Подсистема антифрода: скоринг транзакций в реальном времени и управление блок-листами."
+  },
+  {
+    "id": "prj-settlement",
+    "namespaceId": "ns-payments",
+    "parentProjectId": "prj-payment-gateway",
+    "name": "settlement",
+    "displayName": "Settlement",
+    "description": "Сверка и взаиморасчёты с платёжными провайдерами."
+  },
+  {
+    "id": "prj-bi-platform",
+    "namespaceId": "ns-analytics",
+    "name": "bi-platform",
+    "displayName": "BI Platform",
+    "description": "Основная BI-платформа: ETL-конвейеры, дашборды и хранилище данных."
+  },
+  {
+    "id": "prj-data-warehouse",
+    "namespaceId": "ns-analytics",
+    "parentProjectId": "prj-bi-platform",
+    "name": "data-warehouse",
+    "displayName": "Data Warehouse",
+    "description": "Корпоративное хранилище данных: схемы, коннекторы, оркестрация."
+  },
+  {
+    "id": "prj-reporting",
+    "namespaceId": "ns-analytics",
+    "name": "reporting",
+    "displayName": "Reporting",
+    "description": "Генерация и доставка плановых и ad-hoc отчётов."
+  },
+  {
+    "id": "prj-identity-provider",
+    "namespaceId": "ns-auth",
+    "name": "identity-provider",
+    "displayName": "Identity Provider",
+    "description": "Реестр пользователей, управление паролями и токенами."
+  },
+  {
+    "id": "prj-sso",
+    "namespaceId": "ns-auth",
+    "name": "sso",
+    "displayName": "SSO",
+    "description": "Единый вход: поддержка SAML, OAuth2 и управление сессиями."
+  },
+  {
+    "id": "prj-product-catalog",
+    "namespaceId": "ns-catalog",
+    "name": "product-catalog",
+    "displayName": "Product Catalog",
+    "description": "Управление карточками товаров, категориями и атрибутами."
+  },
+  {
+    "id": "prj-search-engine",
+    "namespaceId": "ns-catalog",
+    "parentProjectId": "prj-product-catalog",
+    "name": "search-engine",
+    "displayName": "Search Engine",
+    "description": "Полнотекстовый и фасетный поиск по каталогу."
+  },
+  {
+    "id": "prj-email-service",
+    "namespaceId": "ns-notifications",
+    "name": "email-service",
+    "displayName": "Email Service",
+    "description": "Отправка транзакционных и маркетинговых e-mail сообщений."
+  },
+  {
+    "id": "prj-push-service",
+    "namespaceId": "ns-notifications",
+    "name": "push-service",
+    "displayName": "Push Service",
+    "description": "Отправка push-уведомлений в мобильные приложения."
+  },
+  {
+    "id": "prj-sms-gateway",
+    "namespaceId": "ns-notifications",
+    "name": "sms-gateway",
+    "displayName": "SMS Gateway",
+    "description": "Маршрутизация SMS через внешних операторов."
+  }
+]

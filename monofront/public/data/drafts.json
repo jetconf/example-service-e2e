@@ -1,0 +1,653 @@
+[
+  {
+    "id": "draft-1779227815106",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "authorId": "user-admin",
+    "createdAt": "2026-05-19T21:56:55.106Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779227777759",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "authorId": "user-alex77",
+    "createdAt": "2026-05-19T21:56:17.759Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779227525212",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "authorId": "user-admin",
+    "createdAt": "2026-05-19T21:52:05.212Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779227474613",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "authorId": "user-alex77",
+    "createdAt": "2026-05-19T21:51:14.613Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779226094177",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "authorId": "user-admin",
+    "createdAt": "2026-05-19T21:28:14.177Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779226024589",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "authorId": "user-alex77",
+    "createdAt": "2026-05-19T21:27:04.589Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779225886804",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "authorId": "user-admin",
+    "createdAt": "2026-05-19T21:24:46.804Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779220373876",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "authorId": "user-admin",
+    "createdAt": "2026-05-19T19:52:53.876Z",
+    "status": "cancelled",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-1779220343573",
+    "entityType": "service",
+    "entityId": "svc-exam-platform",
+    "entityName": "Exam Platform",
+    "configBefore": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": true
+    },
+    "configAfter": {
+      "hlr_provider": {
+        "url": "https://klokovaa77.ru",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "show_oge_page": false
+    },
+    "authorId": "user-alex77",
+    "createdAt": "2026-05-19T19:52:23.573Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-alex77"
+    ]
+  },
+  {
+    "id": "draft-001",
+    "entityType": "service",
+    "entityId": "svc-etl-pipeline",
+    "entityName": "ETL Pipeline",
+    "configBefore": {
+      "orchestrator": "airflow",
+      "dag_folder": "/opt/airflow/dags/etl",
+      "sources": [
+        "pg-payments",
+        "pg-orders",
+        "pg-users",
+        "clickhouse-events"
+      ],
+      "target": {
+        "host": "pg-dw.internal",
+        "schema": "staging"
+      },
+      "schedule": "0 */2 * * *",
+      "slack_alerts": {
+        "channel": "#data-alerts",
+        "on_failure": true,
+        "on_sla_miss": true
+      }
+    },
+    "configAfter": {
+      "orchestrator": "airflow",
+      "dag_folder": "/opt/airflow/dags/etl",
+      "sources": [
+        "pg-payments",
+        "pg-orders",
+        "pg-users",
+        "clickhouse-events",
+        "pg-catalog"
+      ],
+      "target": {
+        "host": "pg-dw.internal",
+        "schema": "staging"
+      },
+      "schedule": "0 */1 * * *",
+      "slack_alerts": {
+        "channel": "#data-alerts",
+        "on_failure": true,
+        "on_sla_miss": true,
+        "on_success": false
+      }
+    },
+    "authorId": "user-ivan",
+    "createdAt": "2026-05-19T10:00:00.000Z",
+    "status": "created",
+    "approverIds": [
+      "user-admin",
+      "user-maria"
+    ]
+  },
+  {
+    "id": "draft-002",
+    "entityType": "service",
+    "entityId": "svc-payment-processor",
+    "entityName": "Payment Processor",
+    "configBefore": {
+      "database": {
+        "host": "pg-payments.internal",
+        "port": 5432,
+        "pool_size": 20,
+        "ssl": true
+      },
+      "providers": [
+        "sberbank",
+        "tinkoff",
+        "vtb"
+      ],
+      "retry_policy": {
+        "max_attempts": 3,
+        "backoff_ms": 500,
+        "jitter": true
+      },
+      "feature_flags": {
+        "new_3ds": true,
+        "installments": false,
+        "sbp_enabled": true
+      },
+      "queue": {
+        "broker": "kafka",
+        "topic": "payments.transactions",
+        "group_id": "processor-v2"
+      }
+    },
+    "configAfter": {
+      "database": {
+        "host": "pg-payments.internal",
+        "port": 5432,
+        "pool_size": 30,
+        "ssl": true
+      },
+      "providers": [
+        "sberbank",
+        "tinkoff",
+        "vtb",
+        "raiffeisen"
+      ],
+      "retry_policy": {
+        "max_attempts": 5,
+        "backoff_ms": 300,
+        "jitter": true
+      },
+      "feature_flags": {
+        "new_3ds": true,
+        "installments": true,
+        "sbp_enabled": true
+      },
+      "queue": {
+        "broker": "kafka",
+        "topic": "payments.transactions",
+        "group_id": "processor-v3"
+      }
+    },
+    "authorId": "user-admin",
+    "createdAt": "2026-05-14T12:00:00.000Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin"
+    ]
+  },
+  {
+    "id": "draft-003",
+    "entityType": "service",
+    "entityId": "svc-user-registry",
+    "entityName": "User Registry",
+    "configBefore": {
+      "database": {
+        "host": "pg-auth.internal",
+        "port": 5432,
+        "database": "users",
+        "pool_size": 15
+      },
+      "cache": {
+        "backend": "redis",
+        "host": "redis-auth.internal",
+        "ttl_sec": 600
+      },
+      "pagination": {
+        "default_limit": 50,
+        "max_limit": 500
+      },
+      "search": {
+        "enabled": true,
+        "fields": [
+          "email",
+          "firstName",
+          "lastName",
+          "department"
+        ]
+      },
+      "events": {
+        "broker": "kafka",
+        "topic": "auth.user.events"
+      }
+    },
+    "configAfter": {
+      "database": {
+        "host": "pg-auth.internal",
+        "port": 5432,
+        "database": "users",
+        "pool_size": 20
+      },
+      "cache": {
+        "backend": "redis",
+        "host": "redis-auth.internal",
+        "ttl_sec": 300
+      },
+      "pagination": {
+        "default_limit": 50,
+        "max_limit": 500
+      },
+      "search": {
+        "enabled": true,
+        "fields": [
+          "email",
+          "firstName",
+          "lastName",
+          "department",
+          "login"
+        ]
+      },
+      "events": {
+        "broker": "kafka",
+        "topic": "auth.user.events.v2"
+      }
+    },
+    "authorId": "user-olga",
+    "createdAt": "2026-05-09T12:00:00.000Z",
+    "status": "cancelled",
+    "approverIds": [
+      "user-admin",
+      "user-olga"
+    ]
+  },
+  {
+    "id": "draft-004",
+    "entityType": "service",
+    "entityId": "svc-email-sender",
+    "entityName": "Email Sender",
+    "configBefore": {
+      "primary_provider": "sendgrid",
+      "fallback_provider": "mailgun",
+      "sendgrid": {
+        "api_key_env": "SENDGRID_API_KEY",
+        "from": "noreply@corp.internal",
+        "from_name": "Corp Platform"
+      },
+      "mailgun": {
+        "api_key_env": "MAILGUN_API_KEY",
+        "domain": "mg.corp.internal"
+      },
+      "rate_limit": {
+        "per_second": 100,
+        "per_day": 500000
+      },
+      "retry": {
+        "max_attempts": 3,
+        "backoff_seconds": [
+          5,
+          30,
+          120
+        ]
+      }
+    },
+    "configAfter": {
+      "primary_provider": "mailgun",
+      "fallback_provider": "sendgrid",
+      "sendgrid": {
+        "api_key_env": "SENDGRID_API_KEY",
+        "from": "noreply@corp.internal",
+        "from_name": "Corp Notifications"
+      },
+      "mailgun": {
+        "api_key_env": "MAILGUN_API_KEY",
+        "domain": "mg.corp.internal"
+      },
+      "rate_limit": {
+        "per_second": 200,
+        "per_day": 1000000
+      },
+      "retry": {
+        "max_attempts": 5,
+        "backoff_seconds": [
+          5,
+          15,
+          60,
+          180,
+          600
+        ]
+      }
+    },
+    "authorId": "user-elena",
+    "createdAt": "2026-05-19T11:40:00.000Z",
+    "status": "created",
+    "approverIds": [
+      "user-admin",
+      "user-elena"
+    ]
+  },
+  {
+    "id": "draft-005",
+    "entityType": "service",
+    "entityId": "svc-dashboard-renderer",
+    "entityName": "Dashboard Renderer",
+    "configBefore": {
+      "superset_url": "https://bi.corp.internal",
+      "cache": {
+        "backend": "redis",
+        "host": "redis-bi.internal",
+        "ttl_sec": 300
+      },
+      "embed_key_ttl_sec": 3600,
+      "feature_flags": {
+        "alerts_reports": true,
+        "thumbnails": true,
+        "explore_form_data_cache": true
+      }
+    },
+    "configAfter": {
+      "superset_url": "https://bi.corp.internal",
+      "cache": {
+        "backend": "redis",
+        "host": "redis-bi.internal",
+        "ttl_sec": 600
+      },
+      "embed_key_ttl_sec": 7200,
+      "feature_flags": {
+        "alerts_reports": true,
+        "thumbnails": true,
+        "explore_form_data_cache": true,
+        "ssh_tunneling": false
+      }
+    },
+    "authorId": "user-maria",
+    "createdAt": "2026-05-16T12:00:00.000Z",
+    "status": "approved",
+    "approverIds": [
+      "user-admin",
+      "user-maria"
+    ]
+  },
+  {
+    "id": "draft-006",
+    "entityType": "service",
+    "entityId": "svc-fraud-rules-engine",
+    "entityName": "Fraud Rules Engine",
+    "configBefore": {
+      "rules_reload_interval_sec": 60,
+      "scoring_threshold": 0.75,
+      "rules": [
+        {
+          "id": "r001",
+          "name": "high_amount",
+          "threshold": 500000,
+          "action": "flag"
+        },
+        {
+          "id": "r002",
+          "name": "foreign_ip",
+          "countries": [
+            "NG",
+            "KP",
+            "IR"
+          ],
+          "action": "block"
+        },
+        {
+          "id": "r003",
+          "name": "velocity_check",
+          "max_txn_per_hour": 10,
+          "action": "challenge"
+        }
+      ],
+      "ml_model": {
+        "enabled": true,
+        "endpoint": "http://ml-scoring.internal/predict",
+        "timeout_ms": 200
+      }
+    },
+    "configAfter": {
+      "rules_reload_interval_sec": 30,
+      "scoring_threshold": 0.8,
+      "rules": [
+        {
+          "id": "r001",
+          "name": "high_amount",
+          "threshold": 300000,
+          "action": "challenge"
+        },
+        {
+          "id": "r002",
+          "name": "foreign_ip",
+          "countries": [
+            "NG",
+            "KP",
+            "IR",
+            "SY"
+          ],
+          "action": "block"
+        },
+        {
+          "id": "r003",
+          "name": "velocity_check",
+          "max_txn_per_hour": 5,
+          "action": "block"
+        },
+        {
+          "id": "r004",
+          "name": "new_card",
+          "age_hours": 24,
+          "action": "challenge"
+        }
+      ],
+      "ml_model": {
+        "enabled": true,
+        "endpoint": "http://ml-scoring.internal/predict",
+        "timeout_ms": 150
+      }
+    },
+    "authorId": "user-admin",
+    "createdAt": "2026-05-18T10:00:00.000Z",
+    "status": "cancelled",
+    "approverIds": [
+      "user-admin"
+    ]
+  }
+]

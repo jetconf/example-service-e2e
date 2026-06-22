@@ -1,0 +1,243 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Config Admin API",
+    "version": "1.0.0",
+    "description": "Backend API for the config-admin frontend"
+  },
+  "servers": [{ "url": "http://localhost:8080" }],
+  "paths": {
+    "/api/v1/auth/login": {
+      "post": {
+        "summary": "Login",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["login", "password"],
+                "properties": {
+                  "login": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": { "type": "boolean" },
+                    "user": { "$ref": "#/components/schemas/User" },
+                    "error": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/auth/logout": {
+      "post": {
+        "summary": "Logout",
+        "responses": { "204": { "description": "Logged out" } }
+      }
+    },
+    "/api/v1/auth/me": {
+      "get": {
+        "summary": "Get current user from session cookie",
+        "responses": {
+          "200": {
+            "description": "Current user or null",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [{ "$ref": "#/components/schemas/User" }, { "type": "null" }]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/catalog/tree": {
+      "get": {
+        "summary": "Get full catalog tree visible to user",
+        "parameters": [{ "name": "userId", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Catalog tree",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/CatalogNode" } } } }
+          }
+        }
+      }
+    },
+    "/api/v1/catalog/roles": {
+      "get": {
+        "summary": "Get role assignments for user",
+        "parameters": [{ "name": "userId", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "List of role assignments with entity names",
+            "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/RoleEntry" } } } }
+          }
+        }
+      }
+    },
+    "/api/v1/catalog/{type}/{id}": {
+      "get": {
+        "summary": "Get entity detail",
+        "parameters": [
+          { "name": "type", "in": "path", "required": true, "schema": { "type": "string", "enum": ["namespace", "project", "service"] } },
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "userId", "in": "query", "required": true, "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "200": { "description": "Entity detail", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EntityDetail" } } } }
+        }
+      }
+    },
+    "/api/v1/catalog/{type}/{id}/config": {
+      "post": {
+        "summary": "Create draft for config change",
+        "parameters": [
+          { "name": "type", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["userId", "config"],
+                "properties": {
+                  "userId": { "type": "string" },
+                  "config": { "type": "object" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Draft creation result",
+            "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" }, "draftId": { "type": "string" }, "error": { "type": "string" } } } } }
+          }
+        }
+      }
+    },
+    "/api/v1/stats": {
+      "get": {
+        "summary": "Dashboard stats",
+        "parameters": [{ "name": "userId", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": {
+            "description": "Stats",
+            "content": { "application/json": { "schema": { "type": "object", "properties": { "namespaces": { "type": "integer" }, "services": { "type": "integer" }, "activeDrafts": { "type": "integer" } } } } }
+          }
+        }
+      }
+    },
+    "/api/v1/drafts": {
+      "get": {
+        "summary": "List drafts visible to user",
+        "parameters": [{ "name": "userId", "in": "query", "required": true, "schema": { "type": "string" } }],
+        "responses": {
+          "200": { "description": "Drafts list", "content": { "application/json": { "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Draft" } } } } }
+        }
+      }
+    },
+    "/api/v1/drafts/{id}/approve": {
+      "post": {
+        "summary": "Approve draft",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "userId": { "type": "string" } } } } } },
+        "responses": { "200": { "description": "Result", "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" }, "error": { "type": "string" } } } } } } }
+      }
+    },
+    "/api/v1/drafts/{id}/cancel": {
+      "post": {
+        "summary": "Cancel draft",
+        "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "type": "object", "properties": { "userId": { "type": "string" } } } } } },
+        "responses": { "200": { "description": "Result", "content": { "application/json": { "schema": { "type": "object", "properties": { "ok": { "type": "boolean" }, "error": { "type": "string" } } } } } } }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "login": { "type": "string" },
+          "firstName": { "type": "string" },
+          "lastName": { "type": "string" },
+          "position": { "type": "string" },
+          "email": { "type": "string" },
+          "department": { "type": "string" }
+        }
+      },
+      "CatalogNode": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "displayName": { "type": "string" },
+          "description": { "type": "string" },
+          "effectiveRole": { "type": "string", "nullable": true },
+          "activeDraftId": { "type": "string" },
+          "config": { "type": "object" },
+          "children": { "type": "array", "items": { "$ref": "#/components/schemas/CatalogNode" } }
+        }
+      },
+      "EntityDetail": {
+        "type": "object",
+        "properties": {
+          "type": { "type": "string" },
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "displayName": { "type": "string" },
+          "description": { "type": "string" },
+          "effectiveRole": { "type": "string", "nullable": true },
+          "responsibleUsers": { "type": "array", "items": { "$ref": "#/components/schemas/User" } },
+          "activeDraft": { "$ref": "#/components/schemas/Draft" },
+          "config": { "type": "object" }
+        }
+      },
+      "RoleEntry": {
+        "type": "object",
+        "properties": {
+          "entityType": { "type": "string" },
+          "entityId": { "type": "string" },
+          "entityName": { "type": "string" },
+          "role": { "type": "string" }
+        }
+      },
+      "Draft": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "entityType": { "type": "string" },
+          "entityId": { "type": "string" },
+          "entityName": { "type": "string" },
+          "configBefore": { "type": "object" },
+          "configAfter": { "type": "object" },
+          "authorId": { "type": "string" },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "status": { "type": "string", "enum": ["created", "approved", "cancelled"] },
+          "approverIds": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,43 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: configadmin
+      POSTGRES_USER: configadmin
+      POSTGRES_PASSWORD: configadmin
+    ports:
+      - "5432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U configadmin -d configadmin"]
+      interval: 3s
+      timeout: 5s
+      retries: 10
+
+  migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrate
+    environment:
+      DB_URL: postgres://configadmin:configadmin@postgres:5432/configadmin?sslmode=disable
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DB_URL: postgres://configadmin:configadmin@postgres:5432/configadmin?sslmode=disable
+      PORT: "8080"
+      HOST: "0.0.0.0"
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+
+volumes:
+  pg_data:

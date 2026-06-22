@@ -1,0 +1,34 @@
+[
+  { "userId": "user-admin", "entityType": "namespace", "entityId": "ns-payments",      "role": "responsible" },
+  { "userId": "user-admin", "entityType": "namespace", "entityId": "ns-analytics",     "role": "responsible" },
+  { "userId": "user-admin", "entityType": "namespace", "entityId": "ns-auth",          "role": "responsible" },
+  { "userId": "user-admin", "entityType": "namespace", "entityId": "ns-catalog",       "role": "responsible" },
+  { "userId": "user-admin", "entityType": "namespace", "entityId": "ns-notifications", "role": "responsible" },
+
+  { "userId": "user-ivan", "entityType": "namespace", "entityId": "ns-payments",       "role": "read"        },
+  { "userId": "user-ivan", "entityType": "project",   "entityId": "prj-bi-platform",   "role": "edit"        },
+  { "userId": "user-ivan", "entityType": "service",   "entityId": "svc-user-registry", "role": "edit"        },
+  { "userId": "user-ivan", "entityType": "project",   "entityId": "prj-email-service", "role": "read"        },
+  { "userId": "user-ivan", "entityType": "service",   "entityId": "svc-search-api",    "role": "responsible" },
+
+  { "userId": "user-maria", "entityType": "namespace", "entityId": "ns-analytics",      "role": "responsible" },
+  { "userId": "user-maria", "entityType": "project",   "entityId": "prj-email-service", "role": "read"        },
+
+  { "userId": "user-dmitry", "entityType": "namespace", "entityId": "ns-payments",      "role": "read" },
+  { "userId": "user-dmitry", "entityType": "namespace", "entityId": "ns-notifications", "role": "read" },
+
+  { "userId": "user-olga", "entityType": "namespace", "entityId": "ns-auth",             "role": "responsible" },
+  { "userId": "user-olga", "entityType": "project",   "entityId": "prj-product-catalog", "role": "edit"        },
+
+  { "userId": "user-aleksey", "entityType": "namespace", "entityId": "ns-catalog",      "role": "responsible" },
+  { "userId": "user-aleksey", "entityType": "project",   "entityId": "prj-bi-platform", "role": "read"        },
+
+  { "userId": "user-elena", "entityType": "namespace", "entityId": "ns-notifications",       "role": "responsible" },
+  { "userId": "user-elena", "entityType": "project",   "entityId": "prj-identity-provider",  "role": "edit"        },
+
+  { "userId": "user-sergey", "entityType": "namespace", "entityId": "ns-payments",      "role": "read" },
+  { "userId": "user-sergey", "entityType": "namespace", "entityId": "ns-analytics",     "role": "read" },
+  { "userId": "user-sergey", "entityType": "namespace", "entityId": "ns-auth",          "role": "read" },
+  { "userId": "user-sergey", "entityType": "namespace", "entityId": "ns-catalog",       "role": "read" },
+  { "userId": "user-sergey", "entityType": "namespace", "entityId": "ns-notifications", "role": "read" }
+]

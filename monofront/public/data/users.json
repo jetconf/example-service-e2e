@@ -1,0 +1,82 @@
+[
+  {
+    "id": "user-admin",
+    "login": "admin",
+    "password": "Admin123",
+    "firstName": "Александр",
+    "lastName": "Администраторов",
+    "position": "Главный администратор платформы",
+    "email": "admin@corp.internal",
+    "department": "Платформенная инфраструктура"
+  },
+  {
+    "id": "user-ivan",
+    "login": "ivan.petrov",
+    "password": "Petrov123",
+    "firstName": "Иван",
+    "lastName": "Петров",
+    "position": "Старший инженер по разработке",
+    "email": "ivan.petrov@corp.internal",
+    "department": "Команда интеграций"
+  },
+  {
+    "id": "user-maria",
+    "login": "maria.sidorova",
+    "password": "Sidorova123",
+    "firstName": "Мария",
+    "lastName": "Сидорова",
+    "position": "Тимлид аналитической платформы",
+    "email": "maria.sidorova@corp.internal",
+    "department": "Аналитика и BI"
+  },
+  {
+    "id": "user-dmitry",
+    "login": "dmitry.kozlov",
+    "password": "Kozlov123",
+    "firstName": "Дмитрий",
+    "lastName": "Козлов",
+    "position": "DevOps-инженер",
+    "email": "dmitry.kozlov@corp.internal",
+    "department": "Эксплуатация и мониторинг"
+  },
+  {
+    "id": "user-olga",
+    "login": "olga.novikova",
+    "password": "Novikova123",
+    "firstName": "Ольга",
+    "lastName": "Новикова",
+    "position": "Архитектор безопасности",
+    "email": "olga.novikova@corp.internal",
+    "department": "Информационная безопасность"
+  },
+  {
+    "id": "user-aleksey",
+    "login": "aleksey.sokolov",
+    "password": "Sokolov123",
+    "firstName": "Алексей",
+    "lastName": "Соколов",
+    "position": "Продуктовый инженер",
+    "email": "aleksey.sokolov@corp.internal",
+    "department": "Каталог товаров"
+  },
+  {
+    "id": "user-elena",
+    "login": "elena.morozova",
+    "password": "Morozova123",
+    "firstName": "Елена",
+    "lastName": "Морозова",
+    "position": "Инженер по уведомлениям",
+    "email": "elena.morozova@corp.internal",
+    "department": "Коммуникационные сервисы"
+  },
+  {
+    "id": "user-sergey",
+    "login": "sergey.volkov",
+    "password": "Volkov123",
+    "firstName": "Сергей",
+    "lastName": "Волков",
+    "position": "Системный аналитик",
+    "email": "sergey.volkov@corp.internal",
+    "department": "Системный анализ"
+  }
+]

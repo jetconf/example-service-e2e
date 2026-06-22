@@ -1,0 +1,903 @@
+[
+  {
+    "id": "svc-api-gateway",
+    "projectId": "prj-payment-gateway",
+    "name": "api-gateway",
+    "displayName": "API Gateway",
+    "description": "Единая точка входа для всех внешних запросов к платёжному домену. Балансирует нагрузку, терминирует TLS и применяет rate-limit.",
+    "config": {
+      "host": "0.0.0.0",
+      "port": 8080,
+      "timeout_ms": 5000,
+      "rate_limit": {
+        "rps": 10000,
+        "burst": 2000
+      },
+      "upstreams": [
+        "payment-processor:8081",
+        "webhook-handler:8082"
+      ],
+      "tls": {
+        "enabled": true,
+        "cert_path": "/etc/certs/api-gateway.crt"
+      },
+      "logging": {
+        "level": "INFO",
+        "format": "json"
+      },
+      "cors": {
+        "allowed_origins": [
+          "https://pay.corp.internal"
+        ],
+        "max_age": 3600
+      }
+    }
+  },
+  {
+    "id": "svc-payment-processor",
+    "projectId": "prj-payment-gateway",
+    "name": "payment-processor",
+    "displayName": "Payment Processor",
+    "description": "Ядро обработки платёжных транзакций. Интегрируется с внешними провайдерами (Сбербанк, Тинькофф, ВТБ).",
+    "config": {
+      "database": {
+        "host": "pg-payments.internal",
+        "port": 5432,
+        "pool_size": 20,
+        "ssl": true
+      },
+      "providers": [
+        "sberbank",
+        "tinkoff",
+        "vtb"
+      ],
+      "retry_policy": {
+        "max_attempts": 3,
+        "backoff_ms": 500,
+        "jitter": true
+      },
+      "feature_flags": {
+        "new_3ds": true,
+        "installments": false,
+        "sbp_enabled": true
+      },
+      "queue": {
+        "broker": "kafka",
+        "topic": "payments.transactions",
+        "group_id": "processor-v2"
+      }
+    }
+  },
+  {
+    "id": "svc-webhook-handler",
+    "projectId": "prj-payment-gateway",
+    "name": "webhook-handler",
+    "displayName": "Webhook Handler",
+    "description": "Приём и обработка входящих webhook-уведомлений от платёжных провайдеров.",
+    "config": {
+      "listen_port": 8082,
+      "secret_key_env": "WEBHOOK_SECRET",
+      "providers": {
+        "sberbank": {
+          "path": "/webhook/sberbank",
+          "validate_signature": true
+        },
+        "tinkoff": {
+          "path": "/webhook/tinkoff",
+          "validate_signature": true
+        },
+        "vtb": {
+          "path": "/webhook/vtb",
+          "validate_signature": false
+        }
+      },
+      "retry": {
+        "max_attempts": 5,
+        "delay_ms": 1000
+      },
+      "dead_letter_queue": "payments.webhook.dlq"
+    }
+  },
+  {
+    "id": "svc-fraud-rules-engine",
+    "projectId": "prj-fraud-detection",
+    "name": "fraud-rules-engine",
+    "displayName": "Fraud Rules Engine",
+    "description": "Движок правил антифрода. Применяет набор конфигурируемых правил к каждой транзакции в режиме реального времени.",
+    "config": {
+      "rules_reload_interval_sec": 60,
+      "scoring_threshold": 0.75,
+      "rules": [
+        {
+          "id": "r001",
+          "name": "high_amount",
+          "threshold": 500000,
+          "action": "flag"
+        },
+        {
+          "id": "r002",
+          "name": "foreign_ip",
+          "countries": [
+            "NG",
+            "KP",
+            "IR"
+          ],
+          "action": "block"
+        },
+        {
+          "id": "r003",
+          "name": "velocity_check",
+          "max_txn_per_hour": 10,
+          "action": "challenge"
+        }
+      ],
+      "ml_model": {
+        "enabled": true,
+        "endpoint": "http://ml-scoring.internal/predict",
+        "timeout_ms": 200
+      }
+    }
+  },
+  {
+    "id": "svc-transaction-scorer",
+    "projectId": "prj-fraud-detection",
+    "name": "transaction-scorer",
+    "displayName": "Transaction Scorer",
+    "description": "ML-сервис скоринга транзакций на основе поведенческих признаков.",
+    "config": {
+      "model_version": "v3.2.1",
+      "feature_store": {
+        "host": "redis-features.internal",
+        "port": 6379,
+        "db": 2
+      },
+      "inference": {
+        "batch_size": 64,
+        "timeout_ms": 150
+      },
+      "monitoring": {
+        "drift_threshold": 0.05,
+        "alert_channel": "fraud-alerts"
+      }
+    }
+  },
+  {
+    "id": "svc-blocklist-manager",
+    "projectId": "prj-fraud-detection",
+    "name": "blocklist-manager",
+    "displayName": "Blocklist Manager",
+    "description": "Управление списками блокировки: карты, счета, устройства, IP-адреса.",
+    "config": {
+      "storage": {
+        "backend": "redis",
+        "host": "redis-blocklist.internal",
+        "ttl_days": 90
+      },
+      "sync": {
+        "enabled": true,
+        "source": "https://feeds.frauddb.net/v2",
+        "interval_min": 30
+      },
+      "categories": [
+        "card",
+        "account",
+        "device_fingerprint",
+        "ip_range",
+        "email"
+      ]
+    }
+  },
+  {
+    "id": "svc-settlement-engine",
+    "projectId": "prj-settlement",
+    "name": "settlement-engine",
+    "displayName": "Settlement Engine",
+    "description": "Движок расчётов: формирование реестров выплат и передача в банки-партнёры.",
+    "config": {
+      "schedule": {
+        "cron": "0 3 * * *",
+        "timezone": "Europe/Moscow"
+      },
+      "banks": [
+        "sberbank",
+        "tinkoff",
+        "vtb",
+        "alfabank"
+      ],
+      "format": "ISO20022",
+      "database": {
+        "host": "pg-settlement.internal",
+        "port": 5432,
+        "pool_size": 10
+      },
+      "notifications": {
+        "on_success": "ops-team@corp.internal",
+        "on_failure": "oncall@corp.internal"
+      }
+    }
+  },
+  {
+    "id": "svc-reconciliation",
+    "projectId": "prj-settlement",
+    "name": "reconciliation",
+    "displayName": "Reconciliation",
+    "description": "Сверка внутренних данных о транзакциях с реестрами банков-партнёров.",
+    "config": {
+      "schedule": {
+        "cron": "30 4 * * *",
+        "timezone": "Europe/Moscow"
+      },
+      "tolerance_kopecks": 1,
+      "report_bucket": "s3://corp-finance-reports/reconciliation",
+      "alert_threshold_pct": 0.01
+    }
+  },
+  {
+    "id": "svc-etl-pipeline",
+    "projectId": "prj-bi-platform",
+    "name": "etl-pipeline",
+    "displayName": "ETL Pipeline",
+    "description": "Конвейер извлечения, трансформации и загрузки данных из операционных систем в хранилище.",
+    "config": {
+      "orchestrator": "airflow",
+      "dag_folder": "/opt/airflow/dags/etl",
+      "sources": [
+        "pg-payments",
+        "pg-orders",
+        "pg-users",
+        "clickhouse-events"
+      ],
+      "target": {
+        "host": "pg-dw.internal",
+        "schema": "staging"
+      },
+      "schedule": "0 */2 * * *",
+      "slack_alerts": {
+        "channel": "#data-alerts",
+        "on_failure": true,
+        "on_sla_miss": true
+      }
+    }
+  },
+  {
+    "id": "svc-dashboard-renderer",
+    "projectId": "prj-bi-platform",
+    "name": "dashboard-renderer",
+    "displayName": "Dashboard Renderer",
+    "description": "Сервис рендеринга интерактивных дашбордов на основе Superset.",
+    "config": {
+      "superset_url": "https://bi.corp.internal",
+      "cache": {
+        "backend": "redis",
+        "host": "redis-bi.internal",
+        "ttl_sec": 300
+      },
+      "embed_key_ttl_sec": 3600,
+      "feature_flags": {
+        "alerts_reports": true,
+        "thumbnails": true,
+        "explore_form_data_cache": true
+      }
+    }
+  },
+  {
+    "id": "svc-dw-connector",
+    "projectId": "prj-data-warehouse",
+    "name": "dw-connector",
+    "displayName": "DW Connector",
+    "description": "Набор коннекторов для загрузки данных из различных источников в хранилище.",
+    "config": {
+      "connections": {
+        "payments": {
+          "driver": "postgresql",
+          "host": "pg-payments.internal",
+          "database": "payments",
+          "user": "dw_reader"
+        },
+        "orders": {
+          "driver": "postgresql",
+          "host": "pg-orders.internal",
+          "database": "orders",
+          "user": "dw_reader"
+        },
+        "events": {
+          "driver": "clickhouse",
+          "host": "ch-events.internal",
+          "database": "events",
+          "user": "dw_reader"
+        }
+      },
+      "batch_size": 10000,
+      "parallelism": 4
+    }
+  },
+  {
+    "id": "svc-schema-manager",
+    "projectId": "prj-data-warehouse",
+    "name": "schema-manager",
+    "displayName": "Schema Manager",
+    "description": "Управление схемами и миграциями в хранилище данных.",
+    "config": {
+      "database": {
+        "host": "pg-dw.internal",
+        "port": 5432,
+        "database": "datawarehouse"
+      },
+      "migrations_dir": "/opt/schema-manager/migrations",
+      "auto_apply": false,
+      "review_required": true,
+      "slack_notifications": {
+        "channel": "#dw-schema-changes"
+      }
+    }
+  },
+  {
+    "id": "svc-report-generator",
+    "projectId": "prj-reporting",
+    "name": "report-generator",
+    "displayName": "Report Generator",
+    "description": "Генерация бизнес-отчётов по шаблонам. Поддержка XLSX, PDF и HTML.",
+    "config": {
+      "templates_path": "/opt/reports/templates",
+      "output_bucket": "s3://corp-reports/generated",
+      "formats": [
+        "xlsx",
+        "pdf",
+        "html"
+      ],
+      "max_rows": 1000000,
+      "timeout_sec": 300
+    }
+  },
+  {
+    "id": "svc-scheduled-reports",
+    "projectId": "prj-reporting",
+    "name": "scheduled-reports",
+    "displayName": "Scheduled Reports",
+    "description": "Планировщик автоматической генерации и доставки отчётов.",
+    "config": {
+      "jobs": [
+        {
+          "id": "daily-payments",
+          "cron": "0 8 * * *",
+          "template": "daily_payments",
+          "recipients": [
+            "finance@corp.internal"
+          ]
+        },
+        {
+          "id": "weekly-kpi",
+          "cron": "0 9 * * 1",
+          "template": "weekly_kpi",
+          "recipients": [
+            "ceo@corp.internal",
+            "cfo@corp.internal"
+          ]
+        },
+        {
+          "id": "monthly-revenue",
+          "cron": "0 10 1 * *",
+          "template": "monthly_revenue",
+          "recipients": [
+            "finance@corp.internal"
+          ]
+        }
+      ],
+      "delivery": {
+        "smtp_host": "smtp.corp.internal",
+        "from": "reports@corp.internal"
+      }
+    }
+  },
+  {
+    "id": "svc-pdf-exporter",
+    "projectId": "prj-reporting",
+    "name": "pdf-exporter",
+    "displayName": "PDF Exporter",
+    "description": "Микросервис конвертации HTML-отчётов в PDF через headless Chrome.",
+    "config": {
+      "chrome_path": "/usr/bin/chromium",
+      "concurrency": 4,
+      "page_timeout_ms": 30000,
+      "pdf_options": {
+        "format": "A4",
+        "margin": {
+          "top": "20mm",
+          "bottom": "20mm",
+          "left": "15mm",
+          "right": "15mm"
+        }
+      },
+      "watermark": {
+        "enabled": false,
+        "text": "CONFIDENTIAL"
+      }
+    }
+  },
+  {
+    "id": "svc-user-registry",
+    "projectId": "prj-identity-provider",
+    "name": "user-registry",
+    "displayName": "User Registry",
+    "description": "Централизованный реестр пользователей: CRUD, поиск, управление статусами и атрибутами.",
+    "config": {
+      "database": {
+        "host": "pg-auth.internal",
+        "port": 5432,
+        "database": "users",
+        "pool_size": 15
+      },
+      "cache": {
+        "backend": "redis",
+        "host": "redis-auth.internal",
+        "ttl_sec": 600
+      },
+      "pagination": {
+        "default_limit": 50,
+        "max_limit": 500
+      },
+      "search": {
+        "enabled": true,
+        "fields": [
+          "email",
+          "firstName",
+          "lastName",
+          "department"
+        ]
+      },
+      "events": {
+        "broker": "kafka",
+        "topic": "auth.user.events"
+      }
+    }
+  },
+  {
+    "id": "svc-password-service",
+    "projectId": "prj-identity-provider",
+    "name": "password-service",
+    "displayName": "Password Service",
+    "description": "Управление паролями: хеширование, политики сложности, история и сброс.",
+    "config": {
+      "hashing": {
+        "algorithm": "argon2id",
+        "memory_kb": 65536,
+        "iterations": 3,
+        "parallelism": 4
+      },
+      "policy": {
+        "min_length": 10,
+        "require_upper": true,
+        "require_digits": true,
+        "require_special": true,
+        "history_depth": 10
+      },
+      "reset_token": {
+        "ttl_minutes": 30,
+        "delivery": "email"
+      },
+      "lockout": {
+        "max_attempts": 5,
+        "lockout_duration_min": 15
+      }
+    }
+  },
+  {
+    "id": "svc-token-manager",
+    "projectId": "prj-identity-provider",
+    "name": "token-manager",
+    "displayName": "Token Manager",
+    "description": "Выпуск, валидация и отзыв JWT/opaque токенов доступа и обновления.",
+    "config": {
+      "access_token": {
+        "ttl_sec": 900,
+        "algorithm": "RS256",
+        "issuer": "https://auth.corp.internal"
+      },
+      "refresh_token": {
+        "ttl_days": 30,
+        "rotation": true,
+        "family_invalidation": true
+      },
+      "jwks_uri": "https://auth.corp.internal/.well-known/jwks.json",
+      "revocation_store": {
+        "backend": "redis",
+        "host": "redis-auth.internal",
+        "db": 1
+      }
+    }
+  },
+  {
+    "id": "svc-saml-provider",
+    "projectId": "prj-sso",
+    "name": "saml-provider",
+    "displayName": "SAML Provider",
+    "description": "IdP-роль для SAML 2.0: обработка запросов аутентификации от корпоративных SP.",
+    "config": {
+      "entity_id": "https://sso.corp.internal/saml/metadata",
+      "sso_url": "https://sso.corp.internal/saml/sso",
+      "slo_url": "https://sso.corp.internal/saml/slo",
+      "cert_path": "/etc/certs/saml-idp.crt",
+      "key_path": "/etc/certs/saml-idp.key",
+      "session_ttl_h": 8,
+      "sp_list": [
+        "jira",
+        "confluence",
+        "gitlab",
+        "grafana"
+      ]
+    }
+  },
+  {
+    "id": "svc-oauth2-server",
+    "projectId": "prj-sso",
+    "name": "oauth2-server",
+    "displayName": "OAuth2 Server",
+    "description": "Authorization Server по OAuth 2.1: authorization code + PKCE, client credentials, device flow.",
+    "config": {
+      "issuer": "https://auth.corp.internal",
+      "authorization_endpoint": "/oauth/authorize",
+      "token_endpoint": "/oauth/token",
+      "scopes": [
+        "openid",
+        "profile",
+        "email",
+        "api:read",
+        "api:write",
+        "admin"
+      ],
+      "pkce_required": true,
+      "clients_config": "dynamic",
+      "introspection_enabled": true
+    }
+  },
+  {
+    "id": "svc-session-manager",
+    "projectId": "prj-sso",
+    "name": "session-manager",
+    "displayName": "Session Manager",
+    "description": "Управление пользовательскими сессиями: создание, валидация, принудительный разрыв.",
+    "config": {
+      "store": {
+        "backend": "redis",
+        "host": "redis-sessions.internal",
+        "db": 0,
+        "cluster": false
+      },
+      "session_ttl_min": 480,
+      "idle_ttl_min": 60,
+      "max_sessions_per_user": 5,
+      "geo_restriction": {
+        "enabled": false,
+        "allowed_countries": []
+      }
+    }
+  },
+  {
+    "id": "svc-product-api",
+    "projectId": "prj-product-catalog",
+    "name": "product-api",
+    "displayName": "Product API",
+    "description": "REST API для управления карточками товаров: создание, обновление, публикация.",
+    "config": {
+      "database": {
+        "host": "pg-catalog.internal",
+        "port": 5432,
+        "database": "catalog",
+        "pool_size": 20
+      },
+      "cache": {
+        "backend": "redis",
+        "host": "redis-catalog.internal",
+        "ttl_sec": 120
+      },
+      "image_storage": {
+        "provider": "s3",
+        "bucket": "corp-product-images",
+        "cdn": "https://cdn.corp.internal"
+      },
+      "pagination": {
+        "default_limit": 20,
+        "max_limit": 200
+      },
+      "search_sync": {
+        "enabled": true,
+        "target": "search-indexer"
+      }
+    }
+  },
+  {
+    "id": "svc-category-manager",
+    "projectId": "prj-product-catalog",
+    "name": "category-manager",
+    "displayName": "Category Manager",
+    "description": "Управление иерархией категорий каталога и привязкой атрибутов.",
+    "config": {
+      "database": {
+        "host": "pg-catalog.internal",
+        "port": 5432,
+        "database": "catalog",
+        "pool_size": 5
+      },
+      "max_depth": 6,
+      "cache_ttl_sec": 600,
+      "attribute_sets": [
+        "electronics",
+        "clothing",
+        "food",
+        "home",
+        "sports"
+      ]
+    }
+  },
+  {
+    "id": "svc-search-indexer",
+    "projectId": "prj-search-engine",
+    "name": "search-indexer",
+    "displayName": "Search Indexer",
+    "description": "Индексация данных каталога в Elasticsearch. Инкрементальные и полные переиндексации.",
+    "config": {
+      "elasticsearch": {
+        "hosts": [
+          "es-search-1.internal:9200",
+          "es-search-2.internal:9200"
+        ],
+        "index": "products-v5"
+      },
+      "source": {
+        "type": "kafka",
+        "topic": "catalog.products.events",
+        "group_id": "search-indexer"
+      },
+      "bulk_size": 500,
+      "flush_interval_ms": 2000,
+      "full_reindex_cron": "0 2 * * 0"
+    }
+  },
+  {
+    "id": "svc-search-api",
+    "projectId": "prj-search-engine",
+    "name": "search-api",
+    "displayName": "Search API",
+    "description": "Публичный API для полнотекстового и фасетного поиска по каталогу.",
+    "config": {
+      "elasticsearch": {
+        "hosts": [
+          "es-search-1.internal:9200",
+          "es-search-2.internal:9200"
+        ],
+        "index": "products-v5"
+      },
+      "port": 8090,
+      "default_size": 20,
+      "max_size": 200,
+      "typo_tolerance": {
+        "enabled": true,
+        "min_word_length": 4
+      },
+      "synonyms_file": "/etc/search/synonyms.txt",
+      "boost": {
+        "title": 3,
+        "brand": 2,
+        "category": 1.5,
+        "description": 1
+      }
+    }
+  },
+  {
+    "id": "svc-suggest-service",
+    "projectId": "prj-search-engine",
+    "name": "suggest-service",
+    "displayName": "Suggest Service",
+    "description": "Автодополнение и саджест поисковых запросов на основе популярных запросов.",
+    "config": {
+      "cache": {
+        "backend": "redis",
+        "host": "redis-catalog.internal",
+        "db": 3,
+        "ttl_sec": 300
+      },
+      "top_k": 10,
+      "min_query_len": 2,
+      "personalization": {
+        "enabled": true,
+        "weight": 0.3
+      },
+      "trending_update_interval_min": 15
+    }
+  },
+  {
+    "id": "svc-email-sender",
+    "projectId": "prj-email-service",
+    "name": "email-sender",
+    "displayName": "Email Sender",
+    "description": "Отправка e-mail через SMTP и внешние провайдеры (SendGrid, Mailgun).",
+    "config": {
+      "primary_provider": "sendgrid",
+      "fallback_provider": "mailgun",
+      "sendgrid": {
+        "api_key_env": "SENDGRID_API_KEY",
+        "from": "noreply@corp.internal",
+        "from_name": "Corp Platform"
+      },
+      "mailgun": {
+        "api_key_env": "MAILGUN_API_KEY",
+        "domain": "mg.corp.internal"
+      },
+      "rate_limit": {
+        "per_second": 100,
+        "per_day": 500000
+      },
+      "retry": {
+        "max_attempts": 3,
+        "backoff_seconds": [
+          5,
+          30,
+          120
+        ]
+      }
+    }
+  },
+  {
+    "id": "svc-template-engine",
+    "projectId": "prj-email-service",
+    "name": "template-engine",
+    "displayName": "Template Engine",
+    "description": "Рендеринг шаблонов e-mail сообщений с поддержкой локализации.",
+    "config": {
+      "engine": "mjml",
+      "templates_dir": "/opt/templates/email",
+      "locales": [
+        "ru",
+        "en",
+        "kk"
+      ],
+      "default_locale": "ru",
+      "cache": {
+        "enabled": true,
+        "backend": "memory",
+        "max_size": 200
+      },
+      "partials_dir": "/opt/templates/email/partials"
+    }
+  },
+  {
+    "id": "svc-bounce-handler",
+    "projectId": "prj-email-service",
+    "name": "bounce-handler",
+    "displayName": "Bounce Handler",
+    "description": "Обработка отказов и жалоб от почтовых провайдеров. Управление списком подавления.",
+    "config": {
+      "webhook_path": "/webhooks/bounces",
+      "secret_env": "BOUNCE_WEBHOOK_SECRET",
+      "suppression_list": {
+        "backend": "postgresql",
+        "host": "pg-notifications.internal",
+        "table": "email_suppressions"
+      },
+      "categories": {
+        "hard_bounce": "permanent",
+        "soft_bounce": "transient",
+        "spam_report": "permanent"
+      },
+      "alert_threshold": {
+        "bounces_per_hour": 500,
+        "spam_rate_pct": 0.1
+      }
+    }
+  },
+  {
+    "id": "svc-push-dispatcher",
+    "projectId": "prj-push-service",
+    "name": "push-dispatcher",
+    "displayName": "Push Dispatcher",
+    "description": "Отправка push-уведомлений через APNs и FCM.",
+    "config": {
+      "apns": {
+        "key_path": "/etc/certs/apns.p8",
+        "key_id_env": "APNS_KEY_ID",
+        "team_id_env": "APNS_TEAM_ID",
+        "bundle_id": "com.corp.app"
+      },
+      "fcm": {
+        "credentials_path": "/etc/certs/fcm-credentials.json",
+        "project_id_env": "FCM_PROJECT_ID"
+      },
+      "concurrency": 50,
+      "queue": {
+        "broker": "kafka",
+        "topic": "notifications.push",
+        "consumer_group": "push-dispatcher"
+      },
+      "ttl_seconds": 86400
+    }
+  },
+  {
+    "id": "svc-device-registry",
+    "projectId": "prj-push-service",
+    "name": "device-registry",
+    "displayName": "Device Registry",
+    "description": "Хранение и управление токенами устройств для push-уведомлений.",
+    "config": {
+      "database": {
+        "host": "pg-notifications.internal",
+        "port": 5432,
+        "database": "devices",
+        "pool_size": 10
+      },
+      "token_ttl_days": 180,
+      "dedup_window_sec": 60,
+      "platforms": [
+        "ios",
+        "android",
+        "web"
+      ]
+    }
+  },
+  {
+    "id": "svc-sms-sender",
+    "projectId": "prj-sms-gateway",
+    "name": "sms-sender",
+    "displayName": "SMS Sender",
+    "description": "Отправка SMS через операторов: МТС, МегаФон, Beeline.",
+    "config": {
+      "primary_operator": "mts",
+      "fallback_order": [
+        "megafon",
+        "beeline"
+      ],
+      "mts": {
+        "api_url": "https://api.mts-sms.ru/v2",
+        "login_env": "MTS_LOGIN",
+        "password_env": "MTS_PASSWORD",
+        "sender": "CORP"
+      },
+      "megafon": {
+        "api_url": "https://api.megafon-sms.ru",
+        "token_env": "MEGAFON_TOKEN",
+        "sender": "CORP"
+      },
+      "beeline": {
+        "api_url": "https://api.beeline-sms.ru",
+        "token_env": "BEELINE_TOKEN",
+        "sender": "CORP"
+      },
+      "rate_limit": {
+        "per_second": 50,
+        "per_day": 100000
+      }
+    }
+  },
+  {
+    "id": "svc-carrier-router",
+    "projectId": "prj-sms-gateway",
+    "name": "carrier-router",
+    "displayName": "Carrier Router",
+    "description": "Маршрутизация SMS по номеру телефона к оптимальному оператору.",
+    "config": {
+      "hlr_provider": {
+        "url": "https://hlr.corp.internal",
+        "timeout_ms": 500,
+        "cache_ttl_h": 24
+      },
+      "routing_rules": [
+        {
+          "prefix": "7916",
+          "operator": "mts"
+        },
+        {
+          "prefix": "7926",
+          "operator": "megafon"
+        },
+        {
+          "prefix": "7903",
+          "operator": "beeline"
+        },
+        {
+          "prefix": "7700",
+          "operator": "beeline"
+        }
+      ],
+      "default_operator": "mts"
+    }
+  }
+]

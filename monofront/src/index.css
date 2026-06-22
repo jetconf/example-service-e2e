@@ -1,0 +1,52 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  background: #F5F3EE;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2A2A2A;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #DEDAD1;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C8C4BA;
+}
+
+/* antd overrides */
+.ant-drawer-content-wrapper {
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.10) !important;
+}
+
+.ant-breadcrumb {
+  font-size: 13px;
+}
+
+.ant-card-hoverable:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08) !important;
+  border-color: #C8C4BA !important;
+}
+
+/* Overlay when drawer is open */
+.ant-drawer-mask {
+  background: rgba(42, 38, 34, 0.25) !important;
+}
